@@ -7,17 +7,19 @@ from datetime import datetime
 
 import requests
 import websocket
-
+import random
 import config
 from protobuf import dy_pb2
 
+from Entity import Entity
 
 class Douyin:
 
-    def __init__(self, url):
+    def __init__(self, url, entities):
         self.ws_conn = None
         self.url = url
         self.room_info = None
+        self.entities = entities
 
     def _get_room_info(self):
         payload = {}
@@ -108,8 +110,8 @@ class Douyin:
             match msg.method:
                 case 'WebcastChatMessage':
                     self._parse_chat_msg(msg.payload)
-                case "WebcastGiftMessage":
-                    self._parse_gift_msg(msg.payload)
+                # case "WebcastGiftMessage":
+                #     self._parse_gift_msg(msg.payload)
                 # case "WebcastLikeMessage":
                 #     self._parse_like_msg(msg.payload)
                 # case "WebcastMemberMessage":
@@ -131,14 +133,26 @@ class Douyin:
     def _on_open(ws):
         logging.info("Websocket opened")
 
-    @staticmethod
-    def _parse_chat_msg(payload):
+    def _parse_chat_msg(self, payload):
         payload_pack = dy_pb2.ChatMessage()
         payload_pack.ParseFromString(payload)
         formatted_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(payload_pack.eventTime))
         user_name = payload_pack.user.nickName
         content = payload_pack.content
         print(f"{formatted_time} [弹幕] {user_name}: {content}")
+
+        x = random.randint(50, 1536 - 10)
+        y = random.randint(50, 864 - 10)
+        id = user_name
+        width = 20
+        height = 20
+        color = (random.randint(0, 255), random.randint(0,255), random.randint(0,255))  # Randomly choose a color
+        speed_x = random.uniform(-1, 1)
+        speed_y = random.uniform(-1, 1)
+        entity = Entity(id, color, x, y, width, height, speed_x, speed_y)
+        self.entities.append(entity)
+
+        
 
     @staticmethod
     def _parse_gift_msg(payload):

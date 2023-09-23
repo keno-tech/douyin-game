@@ -1,4 +1,4 @@
-url: 'https://live.douyin.com/247556339267'
+url: 'https://live.douyin.com/722266687616'
 
 re_pattern: '<script\snonce="\S+?"\s>self\.__pace_f\.push\(\[\w,"\w:\[\\"\$\\",\\"\$L\d+\\",null,([\s\S]+?)\]\\n"\]\)<\/script>'
 
